@@ -24,7 +24,7 @@ public class Advertisement {
     private String description;
 
     @Column(nullable = false)
-    private BigDecimal price;
+    private Integer price;
 
     // One advertisement is associated with one user
     @ManyToOne(fetch = FetchType.LAZY)
@@ -37,7 +37,7 @@ public class Advertisement {
     private Category category;
 
     // Constructor for creating Advertisement without User and Category
-    public Advertisement(String title, String description, BigDecimal price) {
+    public Advertisement(String title, String description, Integer price) {
         this.title = title;
         this.description = description;
         this.price = price;
