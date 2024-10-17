@@ -1,73 +1,60 @@
 package se.lexicon.marketplaceapi.domain.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.HashSet;
+import java.util.Set;
 
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
-@ToString
-@EqualsAndHashCode
-@Builder
 @Entity
+@Table(name = "user")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String username;
-
-    @Column(nullable = false, unique = true)
-    private String email;
 
     @Column(nullable = false)
     private String password;
 
-    // One-to-Many relationship with Advertisement
-    @OneToMany
-    @JoinColumn(name = "user_id") // foreign key in Advertisement table
-    private List<Advertisement> advertisements = new ArrayList<>();
+    @Column(nullable = false)
+    private String email;
 
-    // Constructor
-    public User(String username, String email, String password) {
+    // One user can have multiple advertisements.
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<Advertisement> advertisements = new HashSet<>();
+
+    // Constructor to initialize User without advertisements
+    public User(String username, String password, String email) {
         this.username = username;
-        this.email = email;
         this.password = password;
+        this.email = email;
     }
 
-    // Helper method to add an advertisement
-    public void addAdvertisement(Advertisement advertisement) {
-        if (advertisement == null) {
-            throw new IllegalArgumentException("Advertisement cannot be null");
-        }
-        advertisements.add(advertisement);
-        // Ensure the relationship is bidirectional
-        if (advertisement.getUser() != this) {
-            advertisement.setUser(this);
-        }
-    }
-
-    // Helper method to remove one or more advertisements
-    public void removeAdvertisement(Advertisement... ads) {
-        if (Objects.requireNonNull(ads).length == 0)
+    // Helper method to add advertisements to this user
+    public void addAdvertisement(Advertisement... advertisements) {
+        if (advertisements.length == 0)
             throw new IllegalArgumentException("Advertisements cannot be empty");
-        for (Advertisement ad : ads) {
-            if (this.advertisements.remove(ad)) {
-                ad.setUser(null); // Remove the association with this User
-            }
+        for (Advertisement advertisement : advertisements) {
+            this.advertisements.add(advertisement);
+            advertisement.setUser(this); // Ensure advertisement’s user reference is set to this user
+        }
+    }
+
+    // Helper method to remove advertisements from this user
+    public void removeAdvertisement(Advertisement... advertisements) {
+        if (advertisements.length == 0)
+            throw new IllegalArgumentException("Advertisements cannot be empty");
+        for (Advertisement advertisement : advertisements) {
+            this.advertisements.remove(advertisement);
+            advertisement.setUser(null); // Unset advertisement’s user reference
         }
     }
 }
