@@ -40,6 +40,16 @@ public class Advertisement {
     @JoinColumn(name = "category_id", nullable = false) // Foreign key to Category table
     private Category category;
 
+    // Constructor with User and Category
+    public Advertisement(String title, String description, Integer price, LocalDate expirationDate, User user, Category category) {
+        this.title = title;
+        this.description = description;
+        this.price = price;
+        this.expirationDate = expirationDate;
+        this.user = user;
+        this.category = category;
+    }
+
     // Constructor for creating Advertisement without User and Category
     public Advertisement(String title, String description, Integer price, LocalDate expirationDate) {
         this.title = title;
