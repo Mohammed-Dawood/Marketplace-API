@@ -3,7 +3,7 @@ package se.lexicon.marketplaceapi.domain.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.math.BigDecimal;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "advertisement")
@@ -26,6 +26,10 @@ public class Advertisement {
     @Column(nullable = false)
     private Integer price;
 
+    // Add expiration date for each advertisement
+    @Column(nullable = false)
+    private LocalDate expirationDate;
+
     // One advertisement is associated with one user
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false) // Foreign key to User table
@@ -37,9 +41,10 @@ public class Advertisement {
     private Category category;
 
     // Constructor for creating Advertisement without User and Category
-    public Advertisement(String title, String description, Integer price) {
+    public Advertisement(String title, String description, Integer price, LocalDate expirationDate) {
         this.title = title;
         this.description = description;
         this.price = price;
+        this.expirationDate = expirationDate;
     }
 }
