@@ -11,6 +11,9 @@ public interface AdvertisementRepository extends JpaRepository<Advertisement, Lo
     // Find advertisements by user (using email for authentication)
     List<Advertisement> findByUser_Email(String email);
 
+    // Find advertisements by user ID
+    List<Advertisement> findByUser_Id(Long userId);
+
     // Find advertisements by category
     List<Advertisement> findByCategory_Id(Long categoryId);
 
@@ -19,4 +22,10 @@ public interface AdvertisementRepository extends JpaRepository<Advertisement, Lo
 
     // Find advertisements by title or description (for search/filtering)
     List<Advertisement> findByTitleContainingOrDescriptionContaining(String title, String description);
+
+    // Find advertisements by price
+    List<Advertisement> findByPrice(Integer price);
+
+    // Find advertisements by price range (for more advanced searching)
+    List<Advertisement> findByPriceBetween(Integer minPrice, Integer maxPrice);
 }
