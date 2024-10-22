@@ -6,6 +6,8 @@ import se.lexicon.marketplaceapi.domain.dto.AdvertisementDTOView;
 import se.lexicon.marketplaceapi.domain.entity.Advertisement;
 import se.lexicon.marketplaceapi.domain.entity.User;
 import se.lexicon.marketplaceapi.domain.entity.Category;
+import se.lexicon.marketplaceapi.exception.CategoryNotFoundException;
+import se.lexicon.marketplaceapi.exception.UserNotFoundException;
 import se.lexicon.marketplaceapi.repository.UserRepository;
 import se.lexicon.marketplaceapi.repository.CategoryRepository;
 
@@ -40,11 +42,11 @@ public class AdvertisementConverterImpl implements AdvertisementConverter {
 
         // Find the User by ID from the repository
         Optional<User> userOptional = userRepository.findById(dto.getUserId());
-        User user = userOptional.orElseThrow(() -> new IllegalArgumentException("User not found with ID: " + dto.getUserId()));
+        User user = userOptional.orElseThrow(() -> new UserNotFoundException("User not found with ID: " + dto.getUserId()));
 
         // Find the Category by ID from the repository
         Optional<Category> categoryOptional = categoryRepository.findById(dto.getCategoryId());
-        Category category = categoryOptional.orElseThrow(() -> new IllegalArgumentException("Category not found with ID: " + dto.getCategoryId()));
+        Category category = categoryOptional.orElseThrow(() -> new CategoryNotFoundException("Category not found with ID: " + dto.getCategoryId()));
 
         // Build the Advertisement entity
         return Advertisement.builder()
